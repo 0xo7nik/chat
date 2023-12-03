@@ -1,7 +1,10 @@
+from email import message
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 import requests
 import json
+
+
 
 app = QApplication([])
 win = QWidget()
@@ -14,23 +17,29 @@ hor_up = QHBoxLayout()
 main_chat = QPlainTextEdit()
 main_chat.setReadOnly(True)
 
-login = QLineEdit()
+login = QLineEdit('sitect')
 login.setPlaceholderText('Логин')
-password = QLineEdit()
+password = QLineEdit('2580')
 password.setPlaceholderText('Пароль')
-name = QLineEdit()
+name = QLineEdit('123')
 name.setPlaceholderText('Имя')
 msg = QLineEdit()
 msg.setPlaceholderText('Сообщение...')
 
 def send():
-    data1 = {'login': login.text(), 'password': password.text(), 'name': name.text(), 'message': msg.text()}
+    data1 = {'login': login.text(), 'password': password.text(), 'name1': name.text(), 'message': msg.text()}
     request_send = requests.post('http://algo.enotit.space/chatroom/send.php', data=data1).text
     print(request_send)
+
 def update():
+    text = ''
     data1 = {'login': login.text(), 'password': password.text()}
     request_take = requests.get('http://algo.enotit.space/chatroom/take.php', params=data1).text
-    main_chat.setPlainText(request_take)
+    print(request_take)
+    result = json.loads(request_take) 
+    for i in result['messages']:
+        print(i)
+    text.split(request_take)
     print(data1)
 
 update_btn = QPushButton('Обновить')
