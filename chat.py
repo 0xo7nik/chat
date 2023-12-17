@@ -4,8 +4,6 @@ from PyQt5.QtWidgets import *
 import requests
 import json
 
-
-
 app = QApplication([])
 win = QWidget()
 win.setWindowTitle('Наш чат')
@@ -26,9 +24,28 @@ name.setPlaceholderText('Имя')
 msg = QLineEdit()
 msg.setPlaceholderText('Сообщение...')
 
+cap = QDialog()
+v_cap = QVBoxLayout()
+but_cap = QPushButton('Ответить')
+def ans_cap():
+    if answs_cap == k['captcha']:
+        cap.close()
 def send():
-    data1 = {'login': login.text(), 'password': password.text(), 'name1': name.text(), 'message': msg.text()}
+    global cap, answs_cap
+    data1 = {'login': login.text(), 'password': password.text(), 'name': name.text(), 'message': msg.text(), 'captcha': captcha.text()}
     request_send = requests.post('http://algo.enotit.space/chatroom/send.php', data=data1).text
+    print(request_send)
+    k = json.loads(request_send)
+    if "captcha" in k.keys():
+        cap.setWindowTitle('Captcha')
+        cap.resize(300, 150)
+        quest_cap = QLabel(k['captcha'])
+        answs_cap = QLineEdit()
+        v_cap.addWidget(quest_cap)
+        v_cap.addWidget(answs_cap)
+        v_cap.addWidget(but_cap)
+        cap.setLayout(v_cap)
+        cap.show()
     print(request_send)
 
 def update():
